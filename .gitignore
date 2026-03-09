@@ -1,0 +1,160 @@
+# ========================
+# 敏感信息和配置文件
+# ========================
+# 密码、密钥等敏感信息
+*.keystore
+*.jks
+*.p12
+*.pfx
+*password*
+*secret*
+*.env
+.env.local
+.env.*.local
+
+# 数据库配置
+*-db.properties
+*database.properties
+
+# 第三方 API 密钥
+*api-key*
+*apikey*
+*access_token*
+
+# ========================
+# Maven 构建文件
+# ========================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ========================
+# IDE 和编辑器文件
+# ========================
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+*.loadsh
+bin/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ========================
+# Java 编译文件
+# ========================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# ========================
+# 日志文件
+# ========================
+*.log
+logs/
+log/
+
+# ========================
+# 操作系统文件
+# ========================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+
+# ========================
+# 临时文件
+# ========================
+*.tmp
+*.bak
+*.swp
+*~
+*.orig
+
+# ========================
+# 数据库和 Hibernation
+# ========================
+*.db
+*.h2.db
+*.trace.db
+
+# ========================
+# Spring Boot
+# ========================
+spring-shell.log
+audit.log
+
+# ========================
+# Git 相关
+# ========================
+.gitignore
+!.gitignore
+
+# ========================
+# 文档和注释（可选）
+# ========================
+*.md
+!README.md
+docs/
+javadoc/
+
+# ========================
+# 测试报告
+# ========================
+test-output/
+surefire-reports/
+failsafe-reports/
+*.coverage
+*.exec
+
+# ========================
+# Node.js (如果前端使用)
+# ========================
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ========================
+# Docker
+# ========================
+docker-compose.override.yml
