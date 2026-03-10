@@ -34,4 +34,8 @@ public class RedisComponent {
     }
 
 
+    public String clearTokenInfo4Admin(String token) {
+        redisUtils.delete(Constants.REDIS_KEY_TOKEN_ADMIN + token);
+        return "ok";
+    }
 }

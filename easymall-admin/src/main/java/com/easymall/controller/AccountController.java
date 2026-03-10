@@ -2,6 +2,7 @@ package com.easymall.controller;
 
 import com.easymall.component.RedisComponent;
 import com.easymall.entity.config.AppConfig;
+import com.easymall.entity.constants.Constants;
 import com.easymall.entity.vo.CheckCodeVo;
 import com.wf.captcha.ArithmeticCaptcha;
 import com.wf.captcha.base.Captcha;
@@ -9,6 +10,7 @@ import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,5 +54,10 @@ public class AccountController {
         }finally {
             redisComponent.clearCheckCode(checkCodeKey);
         }
+    }
+
+    @RequestMapping("/logout")
+    public String logout(@RequestHeader(Constants.ADMIN_TOKEN) String token) {
+        return redisComponent.clearTokenInfo4Admin(token);
     }
 }

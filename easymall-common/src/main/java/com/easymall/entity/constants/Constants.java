@@ -6,4 +6,6 @@ public class Constants {
     public final static String REDIS_KEY_CHECK_CODE = REDIS_KEY_PREFIX + "checkcode:";
 
     public final static String REDIS_KEY_TOKEN_ADMIN = REDIS_KEY_PREFIX + "token:admin:";
+
+    public final static String ADMIN_TOKEN = "adminToken";
 }
