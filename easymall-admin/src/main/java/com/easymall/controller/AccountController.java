@@ -4,6 +4,8 @@ import com.easymall.component.RedisComponent;
 import com.easymall.entity.config.AppConfig;
 import com.easymall.entity.constants.Constants;
 import com.easymall.entity.vo.CheckCodeVo;
+import com.easymall.entity.vo.ResponseVO;
+import com.easymall.exception.BusinessException;
 import com.wf.captcha.ArithmeticCaptcha;
 import com.wf.captcha.base.Captcha;
 import jakarta.annotation.Resource;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @Slf4j
 @RequestMapping("/account")
-public class AccountController {
+public class AccountController extends ABaseController{
 
     @Resource
     private RedisComponent redisComponent;
@@ -39,25 +41,24 @@ public class AccountController {
     }
 
     @RequestMapping("/login")
-    public String login(@NotEmpty String account, @NotEmpty String password, @NotEmpty String checkCode, @NotEmpty String checkCodeKey) {
+    public ResponseVO login(@NotEmpty String account, @NotEmpty String password, @NotEmpty String checkCode, @NotEmpty String checkCodeKey) {
         try {
             if (!redisComponent.getCheckCode(checkCodeKey).equalsIgnoreCase(checkCode)){
-                log.info("验证码错误");
-                return "验证码错误";
+                throw new BusinessException("验证码错误");
             }
             if (!account.equals(appConfig.getAdminAccount()) || !password.equals(appConfig.getAdminPassword())){
-                log.info("账号或密码错误");
-                return "账号或密码错误";
+                throw new BusinessException("账号或密码错误");
             }
-            log.info("登录成功");
-            return redisComponent.saveTokenInfo4Admin(account);
+            String token = redisComponent.saveTokenInfo4Admin(account);
+            return getSuccessResponseVO(token);
         }finally {
             redisComponent.clearCheckCode(checkCodeKey);
         }
     }
 
     @RequestMapping("/logout")
-    public String logout(@RequestHeader(Constants.ADMIN_TOKEN) String token) {
-        return redisComponent.clearTokenInfo4Admin(token);
+    public ResponseVO logout(@RequestHeader(Constants.ADMIN_TOKEN) String token) {
+        redisComponent.clearTokenInfo4Admin(token);
+        return getSuccessResponseVO(null);
     }
 }
