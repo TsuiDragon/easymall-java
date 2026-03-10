@@ -6,6 +6,7 @@ import com.easymall.entity.constants.Constants;
 import com.easymall.entity.vo.CheckCodeVo;
 import com.easymall.entity.vo.ResponseVO;
 import com.easymall.exception.BusinessException;
+import com.easymall.utils.StringTools;
 import com.wf.captcha.ArithmeticCaptcha;
 import com.wf.captcha.base.Captcha;
 import jakarta.annotation.Resource;
@@ -46,7 +47,7 @@ public class AccountController extends ABaseController{
             if (!redisComponent.getCheckCode(checkCodeKey).equalsIgnoreCase(checkCode)){
                 throw new BusinessException("验证码错误");
             }
-            if (!account.equals(appConfig.getAdminAccount()) || !password.equals(appConfig.getAdminPassword())){
+            if (!account.equals(appConfig.getAdminAccount()) || !password.equals(StringTools.encodeByMD5(appConfig.getAdminPassword()))){
                 throw new BusinessException("账号或密码错误");
             }
             String token = redisComponent.saveTokenInfo4Admin(account);

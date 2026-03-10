@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class AGlobalExceptionHandlerController extends ABaseController {
@@ -24,7 +25,7 @@ public class AGlobalExceptionHandlerController extends ABaseController {
         logger.error("请求错误，请求地址{},错误信息:", request.getRequestURL(), e);
         ResponseVO ajaxResponse = new ResponseVO();
         //404
-        if (e instanceof NoHandlerFoundException) {
+        if (e instanceof NoHandlerFoundException || e instanceof NoResourceFoundException) {
             ajaxResponse.setCode(ResponseCodeEnum.CODE_404.getCode());
             ajaxResponse.setInfo(ResponseCodeEnum.CODE_404.getMsg());
             ajaxResponse.setStatus(STATUC_ERROR);
