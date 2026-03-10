@@ -18,4 +18,20 @@ public class RedisComponent {
         redisUtils.setex(Constants.REDIS_KEY_CHECK_CODE + checkCodeKey, code, 300);
         return checkCodeKey;
     }
+
+    public String getCheckCode(String checkCodeKey) {
+        return (String) redisUtils.get(Constants.REDIS_KEY_CHECK_CODE + checkCodeKey);
+    }
+
+    public void clearCheckCode(String checkCodeKey) {
+        redisUtils.delete(Constants.REDIS_KEY_CHECK_CODE + checkCodeKey);
+    }
+
+    public String saveTokenInfo4Admin(String account){
+        String token = UUID.randomUUID().toString();
+        redisUtils.setex(Constants.REDIS_KEY_TOKEN_ADMIN + token, account, 60*60*24);
+        return token;
+    }
+
+
 }
