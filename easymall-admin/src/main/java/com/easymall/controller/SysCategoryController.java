@@ -2,10 +2,12 @@ package com.easymall.controller;
 
 import java.util.List;
 
+import com.easymall.entity.po.SysProductProperty;
 import com.easymall.entity.query.SysCategoryQuery;
 import com.easymall.entity.po.SysCategory;
 import com.easymall.entity.vo.ResponseVO;
 import com.easymall.service.SysCategoryService;
+import com.easymall.service.SysProductPropertyService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,8 @@ public class SysCategoryController extends ABaseController{
 
 	@Resource
 	private SysCategoryService sysCategoryService;
+	@Resource
+	private SysProductPropertyService sysProductPropertyService;
 	/**
 	 * 查询
 	 */
@@ -59,28 +63,26 @@ public class SysCategoryController extends ABaseController{
 	}
 
 	/**
-	 * 根据CategoryId查询对象
+	 * 保存商品属性
+	 *
+	 * @param productProperty
+	 * @return
 	 */
-	@RequestMapping("/getSysCategoryByCategoryId")
-	public ResponseVO getSysCategoryByCategoryId(String categoryId) {
-		return getSuccessResponseVO(sysCategoryService.getSysCategoryByCategoryId(categoryId));
-	}
-
-	/**
-	 * 根据CategoryId修改对象
-	 */
-	@RequestMapping("/updateSysCategoryByCategoryId")
-	public ResponseVO updateSysCategoryByCategoryId(SysCategory bean,String categoryId) {
-		sysCategoryService.updateSysCategoryByCategoryId(bean,categoryId);
+	@RequestMapping("/saveProductProperty")
+	public ResponseVO saveProductProperty(SysProductProperty productProperty) {
+		sysProductPropertyService.saveSysProductPropertyService(productProperty);
 		return getSuccessResponseVO(null);
 	}
 
 	/**
-	 * 根据CategoryId删除
+	 * 删除商品属性
+	 *
+	 * @param propertyId
+	 * @return
 	 */
-	@RequestMapping("/deleteSysCategoryByCategoryId")
-	public ResponseVO deleteSysCategoryByCategoryId(String categoryId) {
-		sysCategoryService.deleteSysCategoryByCategoryId(categoryId);
+	@RequestMapping("/delProductProperty")
+	public ResponseVO delProductProperty(String propertyId) {
+		sysProductPropertyService.deleteSysProductPropertyByPropertyId(propertyId);
 		return getSuccessResponseVO(null);
 	}
 }
