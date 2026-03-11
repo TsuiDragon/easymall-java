@@ -25,8 +25,9 @@ public class SysCategoryController extends ABaseController{
 	 * 根据条件分页查询
 	 */
 	@RequestMapping("/loadCategory")
-	public ResponseVO loadDataList(SysCategoryQuery query){
-		return getSuccessResponseVO(sysCategoryService.findListByPage(query));
+	public ResponseVO loadDataList(){
+		SysCategoryQuery param = new SysCategoryQuery();
+		return getSuccessResponseVO(sysCategoryService.findListByParam(param));
 	}
 
 	/**

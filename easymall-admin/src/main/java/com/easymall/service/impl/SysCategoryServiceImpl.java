@@ -30,7 +30,53 @@ public class SysCategoryServiceImpl implements SysCategoryService {
 	 */
 	@Override
 	public List<SysCategory> findListByParam(SysCategoryQuery param) {
-		return this.sysCategoryMapper.selectList(param);
+		List<SysCategory> allCategories = this.sysCategoryMapper.selectList(param);
+		
+		// 将分类按照父子关系组织起来
+		return buildCategoryTree(allCategories);
+	}
+	
+	/**
+	 * 构建分类树形结构
+	 * @param allCategories 所有分类列表
+	 * @return 组织好父子关系的分类列表
+	 */
+	private List<SysCategory> buildCategoryTree(List<SysCategory> allCategories) {
+		if (allCategories == null || allCategories.isEmpty()) {
+			return allCategories;
+		}
+		
+		// 存储最终的根分类（没有父分类或父分类不在结果集中的分类）
+		List<SysCategory> rootCategories = new java.util.ArrayList<>();
+		// 用 Map 存储所有分类，方便快速查找
+		java.util.Map<String, SysCategory> categoryMap = new java.util.HashMap<>();
+		
+		// 先将所有分类放入 Map 中
+		for (SysCategory category : allCategories) {
+			categoryMap.put(category.getCategoryId(), category);
+			// 初始化 children 列表
+			if (category.getChildren() == null) {
+				category.setChildren(new java.util.ArrayList<>());
+			}
+		}
+		
+		// 遍历所有分类，构建父子关系
+		for (SysCategory category : allCategories) {
+			String pCategoryId = category.getpCategoryId();
+			
+			// 如果没有父 ID，或者父 ID 不在结果集中，则作为根分类
+			if (pCategoryId == null || pCategoryId.trim().isEmpty() || !categoryMap.containsKey(pCategoryId)) {
+				rootCategories.add(category);
+			} else {
+				// 找到父分类并添加到其 children 列表中
+				SysCategory parent = categoryMap.get(pCategoryId);
+				if (parent != null) {
+					parent.getChildren().add(category);
+				}
+			}
+		}
+		
+		return rootCategories;
 	}
 
 	/**
