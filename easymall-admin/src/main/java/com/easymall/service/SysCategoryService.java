@@ -68,4 +68,10 @@ public interface SysCategoryService {
 	 * 根据CategoryId删除
 	 */
 	Integer deleteSysCategoryByCategoryId(String categoryId);
+
+	void saveCategoryInfo(SysCategory category);
+
+	void delCategory(String categoryId);
+
+	void changeSort(String categoryIds);
 }

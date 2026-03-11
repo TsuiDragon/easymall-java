@@ -1,10 +1,12 @@
 package com.easymall.component;
 
 import com.easymall.entity.constants.Constants;
+import com.easymall.entity.po.SysCategory;
 import com.easymall.redis.RedisUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -37,5 +39,9 @@ public class RedisComponent {
     public String clearTokenInfo4Admin(String token) {
         redisUtils.delete(Constants.REDIS_KEY_TOKEN_ADMIN + token);
         return "ok";
+    }
+
+    public void saveCategoryList(List<SysCategory> categoryInfoList) {
+        redisUtils.set(com.easymall.constants.Constants.REDIS_KEY_CATEGORY_LIST, categoryInfoList);
     }
 }

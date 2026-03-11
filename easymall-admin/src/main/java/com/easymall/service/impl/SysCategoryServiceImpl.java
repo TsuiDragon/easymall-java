@@ -1,7 +1,9 @@
 package com.easymall.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.easymall.component.RedisComponent;
 import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class SysCategoryServiceImpl implements SysCategoryService {
 
 	@Resource
 	private SysCategoryMapper<SysCategory, SysCategoryQuery> sysCategoryMapper;
+
+	@Resource
+	private RedisComponent redisComponent;
 
 	/**
 	 * 根据条件查询列表
@@ -77,6 +82,51 @@ public class SysCategoryServiceImpl implements SysCategoryService {
 		}
 		
 		return rootCategories;
+	}
+
+	@Override
+	public void saveCategoryInfo(SysCategory bean) {
+		if (bean.getCategoryId() == null) {
+			bean.setCategoryId(StringTools.getRandomNumber(5));
+			Integer maxSort = this.sysCategoryMapper.selectMaxSort(bean.getpCategoryId());
+			bean.setSort(maxSort + 1);
+			this.sysCategoryMapper.insert(bean);
+		} else {
+			this.sysCategoryMapper.updateByCategoryId(bean, bean.getCategoryId());
+		}
+		//刷新缓存
+		save2Redis();
+	}
+
+	@Override
+	public void delCategory(String categoryId) {
+		SysCategoryQuery categoryInfoQuery = new SysCategoryQuery();
+		categoryInfoQuery.setCategoryIdOrPCategoryId(categoryId);
+		sysCategoryMapper.deleteByParam(categoryInfoQuery);
+		//刷新缓存
+		save2Redis();
+	}
+
+	@Override
+	public void changeSort(String categoryIds) {
+		String[] categoryIdArray = categoryIds.split(",");
+		List<SysCategory> categoryInfoList = new ArrayList<>();
+		Integer sort = 1;
+		for (String categoryId : categoryIdArray) {
+			SysCategory categoryInfo = new SysCategory();
+			categoryInfo.setCategoryId(categoryId);
+			categoryInfo.setSort(sort++);
+			categoryInfoList.add(categoryInfo);
+		}
+		this.sysCategoryMapper.updateSortBatch(categoryInfoList);
+		save2Redis();
+	}
+
+	private void save2Redis() {
+		SysCategoryQuery categoryInfoQuery = new SysCategoryQuery();
+		categoryInfoQuery.setOrderBy("sort asc");
+		List<SysCategory> categoryInfoList = findListByParam(categoryInfoQuery);
+		redisComponent.saveCategoryList(categoryInfoList);
 	}
 
 	/**
