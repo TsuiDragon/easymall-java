@@ -1,10 +1,10 @@
 package com.easymall.service;
 
-import java.util.List;
-
-import com.easymall.entity.query.SysCategoryQuery;
 import com.easymall.entity.po.SysCategory;
+import com.easymall.entity.query.SysCategoryQuery;
 import com.easymall.entity.vo.PaginationResultVO;
+
+import java.util.List;
 
 
 /**

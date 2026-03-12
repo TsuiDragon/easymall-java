@@ -1,9 +1,12 @@
 package com.easymall.component;
 
 import com.easymall.entity.constants.Constants;
+import com.easymall.entity.dto.TokenUserInfoDTO;
 import com.easymall.entity.po.SysCategory;
 import com.easymall.redis.RedisUtils;
+import com.easymall.utils.StringTools;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -47,6 +50,47 @@ public class RedisComponent {
 
     public String getLoginInfo4Admin(String token) {
         return (String) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_TOKEN_ADMIN + token);
+    }
+
+    public TokenUserInfoDTO getTokenInfo(String token) {
+        return (TokenUserInfoDTO) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_TOKEN_WEB + token);
+    }
+
+    public void saveTokenInfo(TokenUserInfoDTO tokenUserInfoDto) {
+        cleanUserTokenInfo(tokenUserInfoDto.getUserId());
+        String token = UUID.randomUUID().toString().replace("-", "");
+        tokenUserInfoDto.setToken(token);
+        redisUtils.setex(com.easymall.constants.Constants.REDIS_KEY_TOKEN_WEB + token, tokenUserInfoDto, com.easymall.constants.Constants.REDIS_KEY_EXPIRES_DAY * 7);
+
+        redisUtils.setex(com.easymall.constants.Constants.REDIS_KEY_TOKEN_USERID_WEB + tokenUserInfoDto.getUserId(), token, com.easymall.constants.Constants.REDIS_KEY_EXPIRES_DAY * 7);
+    }
+
+    public void cleanUserTokenInfo(String userId) {
+        String token = (String) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_TOKEN_USERID_WEB + userId);
+        if (StringTools.isEmpty(token)) {
+            return;
+        }
+        redisUtils.delete(com.easymall.constants.Constants.REDIS_KEY_TOKEN_WEB + token);
+    }
+
+    public void cleanCheckCode(String checkCodeKey) {
+        redisUtils.delete(com.easymall.constants.Constants.REDIS_KEY_CHECK_CODE + checkCodeKey);
+    }
+
+    public void cleanToken(String token) {
+        if (StringTools.isEmpty(token)) {
+            return;
+        }
+        TokenUserInfoDTO tokenUserInfoDTO = getTokenInfo(token);
+        redisUtils.delete(com.easymall.constants.Constants.REDIS_KEY_TOKEN_WEB + token);
+        if (tokenUserInfoDTO != null) {
+            redisUtils.delete(com.easymall.constants.Constants.REDIS_KEY_TOKEN_USERID_WEB + tokenUserInfoDTO.getUserId());
+        }
+    }
+
+    public void updateTokenInfo(TokenUserInfoDTO tokenUserInfoDto) {
+        redisUtils.setex(com.easymall.constants.Constants.REDIS_KEY_TOKEN_WEB + tokenUserInfoDto.getToken(), tokenUserInfoDto, com.easymall.constants.Constants.REDIS_KEY_EXPIRES_DAY * 7);
+        redisUtils.setex(com.easymall.constants.Constants.REDIS_KEY_TOKEN_USERID_WEB + tokenUserInfoDto.getUserId(), tokenUserInfoDto.getToken(), com.easymall.constants.Constants.REDIS_KEY_EXPIRES_DAY * 7);
     }
 
 }

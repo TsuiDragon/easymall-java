@@ -1,21 +1,19 @@
 package com.easymall.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.easymall.component.RedisComponent;
-import jakarta.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.easymall.entity.enums.PageSize;
-import com.easymall.entity.query.SysCategoryQuery;
 import com.easymall.entity.po.SysCategory;
-import com.easymall.entity.vo.PaginationResultVO;
 import com.easymall.entity.query.SimplePage;
+import com.easymall.entity.query.SysCategoryQuery;
+import com.easymall.entity.vo.PaginationResultVO;
 import com.easymall.mappers.SysCategoryMapper;
 import com.easymall.service.SysCategoryService;
 import com.easymall.utils.StringTools;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -52,7 +50,7 @@ public class SysCategoryServiceImpl implements SysCategoryService {
 		}
 		
 		// 存储最终的根分类（没有父分类或父分类不在结果集中的分类）
-		List<SysCategory> rootCategories = new java.util.ArrayList<>();
+		List<SysCategory> rootCategories = new ArrayList<>();
 		// 用 Map 存储所有分类，方便快速查找
 		java.util.Map<String, SysCategory> categoryMap = new java.util.HashMap<>();
 		
@@ -61,7 +59,7 @@ public class SysCategoryServiceImpl implements SysCategoryService {
 			categoryMap.put(category.getCategoryId(), category);
 			// 初始化 children 列表
 			if (category.getChildren() == null) {
-				category.setChildren(new java.util.ArrayList<>());
+				category.setChildren(new ArrayList<>());
 			}
 		}
 		
