@@ -44,4 +44,9 @@ public class RedisComponent {
     public void saveCategoryList(List<SysCategory> categoryInfoList) {
         redisUtils.set(com.easymall.constants.Constants.REDIS_KEY_CATEGORY_LIST, categoryInfoList);
     }
+
+    public String getLoginInfo4Admin(String token) {
+        return (String) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_TOKEN_ADMIN + token);
+    }
+
 }
