@@ -93,4 +93,12 @@ public class RedisComponent {
         redisUtils.setex(com.easymall.constants.Constants.REDIS_KEY_TOKEN_USERID_WEB + tokenUserInfoDto.getUserId(), tokenUserInfoDto.getToken(), com.easymall.constants.Constants.REDIS_KEY_EXPIRES_DAY * 7);
     }
 
+    public void forceLogout(String userId) {
+        String token = (String) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_TOKEN_USERID_WEB + userId);
+        if (!StringTools.isEmpty(token)) {
+            redisUtils.delete(com.easymall.constants.Constants.REDIS_KEY_TOKEN_WEB + token);
+        }
+        redisUtils.delete(com.easymall.constants.Constants.REDIS_KEY_TOKEN_USERID_WEB + userId);
+    }
+
 }
