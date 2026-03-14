@@ -9,6 +9,7 @@ import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -101,4 +102,8 @@ public class RedisComponent {
         redisUtils.delete(com.easymall.constants.Constants.REDIS_KEY_TOKEN_USERID_WEB + userId);
     }
 
+    public List<SysCategory> getCategoryList() {
+        List<SysCategory> categoryInfoList = (List<SysCategory>) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_CATEGORY_LIST);
+        return categoryInfoList == null ? new ArrayList<>() : categoryInfoList;
+    }
 }

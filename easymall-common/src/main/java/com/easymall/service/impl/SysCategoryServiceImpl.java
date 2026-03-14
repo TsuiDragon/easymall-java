@@ -120,6 +120,16 @@ public class SysCategoryServiceImpl implements SysCategoryService {
 		save2Redis();
 	}
 
+	@Override
+	public List<SysCategory> getAllCategoryList() {
+		List<SysCategory> categoryInfoList = redisComponent.getCategoryList();
+		if (categoryInfoList == null || categoryInfoList.isEmpty()) {
+			save2Redis();
+		}
+		categoryInfoList = redisComponent.getCategoryList();
+		return redisComponent.getCategoryList();
+	}
+
 	private void save2Redis() {
 		SysCategoryQuery categoryInfoQuery = new SysCategoryQuery();
 		categoryInfoQuery.setOrderBy("sort asc");

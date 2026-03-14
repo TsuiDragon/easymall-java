@@ -74,4 +74,6 @@ public interface SysCategoryService {
 	void delCategory(String categoryId);
 
 	void changeSort(String categoryIds);
+
+    Object getAllCategoryList();
 }
