@@ -1,12 +1,17 @@
 package com.easymall.component;
 
 import com.easymall.entity.constants.Constants;
+import com.easymall.entity.dto.RagDataDTO;
 import com.easymall.entity.dto.TokenUserInfoDTO;
 import com.easymall.entity.po.SysCategory;
 import com.easymall.redis.RedisUtils;
 import com.easymall.utils.StringTools;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBlockingQueue;
+import org.redisson.api.RedissonClient;
+import org.redisson.codec.JsonJacksonCodec;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,10 +19,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class RedisComponent {
 
     @Resource
     private RedisUtils redisUtils;
+
+    @Resource
+    private RedissonClient redissonClient;
 
     public String saveCheckCode(String code) {
         String checkCodeKey = "check:code:" + UUID.randomUUID().toString();
@@ -105,5 +114,17 @@ public class RedisComponent {
     public List<SysCategory> getCategoryList() {
         List<SysCategory> categoryInfoList = (List<SysCategory>) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_CATEGORY_LIST);
         return categoryInfoList == null ? new ArrayList<>() : categoryInfoList;
+    }
+
+    //消息队列
+    public void sendMessage(String queueName, RagDataDTO data) {
+        RBlockingQueue<RagDataDTO> queue = redissonClient.getBlockingQueue(queueName, JsonJacksonCodec.INSTANCE);
+        try {
+            log.info("开始发送消息");
+            queue.put(data);
+            log.info("发送消息成功");
+        } catch (InterruptedException e) {
+            log.error("消息发送失败", e);
+        }
     }
 }
