@@ -1,6 +1,7 @@
 package com.easymall.component;
 
 import com.easymall.entity.constants.Constants;
+import com.easymall.entity.dto.LogisticsSendDTO;
 import com.easymall.entity.dto.RagDataDTO;
 import com.easymall.entity.dto.TokenUserInfoDTO;
 import com.easymall.entity.po.SysCategory;
@@ -126,5 +127,35 @@ public class RedisComponent {
         } catch (InterruptedException e) {
             log.error("消息发送失败", e);
         }
+    }
+
+    public Boolean hasCancelMessage(String userId, Integer messageId) {
+        return redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_CANCEL_AGENT_MESSAGE + userId + messageId) != null;
+    }
+
+    public void saveUserHeartBeat(String userId) {
+        redisUtils.setex(com.easymall.constants.Constants.REDIS_KEY_WS_USER_HEART_BEAT + userId, System.currentTimeMillis(), com.easymall.constants.Constants.REDIS_KEY_EXPIRES_HEART_BEAT);
+    }
+
+    //提示词
+    public void savePrompt(String key, String value) {
+        redisUtils.set(com.easymall.constants.Constants.REDIS_KEY_PROMPT + key, value);
+    }
+
+    public String getPrompt(String key) {
+        return (String) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_PROMPT + key);
+    }
+
+    public void cleanPrompt(String key) {
+        redisUtils.delete(com.easymall.constants.Constants.REDIS_KEY_PROMPT + key);
+    }
+
+
+    public void saveLogisticsInfo(LogisticsSendDTO logisticsSendDTO) {
+        redisUtils.set(com.easymall.constants.Constants.REDIS_KEY_SETTING_LOGISTICS, logisticsSendDTO);
+    }
+
+    public LogisticsSendDTO getLogisticsInfo() {
+        return (LogisticsSendDTO) redisUtils.get(com.easymall.constants.Constants.REDIS_KEY_SETTING_LOGISTICS);
     }
 }
